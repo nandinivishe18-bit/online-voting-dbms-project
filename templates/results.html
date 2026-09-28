@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Results & Feedback</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container" style="width: 550px;">
+
+        <h1>Election Results</h1>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Candidate</th>
+                    <th>Party</th>
+                    <th>Votes</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for candidate in candidates %}
+
+                <tr>
+
+                    <td>{{ candidate[0] }}</td>
+                    <td>{{ candidate[1] }}</td>
+                    <td>{{ candidate[2] }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <br>
+
+        <a href="{{ url_for('view_diagram') }}">
+
+            <button
+                type="button"
+                style="background: #28a745;">
+
+                View ER Diagram
+
+            </button>
+
+        </a>
+
+        <hr style="margin: 30px 0;">
+
+        <h3>Scan QR to give Feedback</h3>
+
+        <div style="
+            background: white;
+            padding: 10px;
+            display: inline-block;
+            border-radius: 10px;
+        ">
+
+            <img
+                src="{{ url_for('static', filename='feedback-qr.png') }}"
+                width="150"
+                alt="QR Code">
+
+        </div>
+
+        <form
+            action="/feedback"
+            method="POST"
+            style="text-align: left; margin-top: 20px;">
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Login Email"
+                required>
+
+            <p>
+                1. Please rate the website from 1 to 5:
+            </p>
+
+            <div class="star-rating">
+
+                <input
+                    type="radio"
+                    name="q1"
+                    id="star5"
+                    value="5">
+
+                <label for="star5">★</label>
+
+                <input
+                    type="radio"
+                    name="q1"
+                    id="star4"
+                    value="4">
+
+                <label for="star4">★</label>
+
+                <input
+                    type="radio"
+                    name="q1"
+                    id="star3"
+                    value="3">
+
+                <label for="star3">★</label>
+
+                <input
+                    type="radio"
+                    name="q1"
+                    id="star2"
+                    value="2">
+
+                <label for="star2">★</label>
+
+                <input
+                    type="radio"
+                    name="q1"
+                    id="star1"
+                    value="1">
+
+                <label for="star1">★</label>
+
+            </div>
+
+            <p>
+                2. Was the website easy to use and understand?
+            </p>
+
+            <div style="margin-left: 10px;">
+
+                <input
+                    type="radio"
+                    name="q2"
+                    value="Yes"
+                    checked
+                    style="width: auto;">
+
+                Yes
+
+                <input
+                    type="radio"
+                    name="q2"
+                    value="No"
+                    style="width: auto;">
+
+                No
+
+            </div>
+
+            <p>
+                3. Would you recommend this online voting website to others?
+            </p>
+
+            <div style="margin-left: 10px;">
+
+                <input
+                    type="radio"
+                    name="q3"
+                    value="Yes"
+                    checked
+                    style="width: auto;">
+
+                Yes
+
+                <input
+                    type="radio"
+                    name="q3"
+                    value="No"
+                    style="width: auto;">
+
+                No
+
+            </div>
+
+            <button
+                type="submit"
+                style="
+                    background: #ffc107;
+                    color: black;
+                    margin-top: 20px;
+                    width: 100%;
+                    font-weight: bold;
+                ">
+
+                Submit Feedback
+
+            </button>
+
+        </form>
+
+        <br>
+
+        <a href="/">
+            Logout
+        </a>
+
+    </div>
+
+</body>
+
+</html>

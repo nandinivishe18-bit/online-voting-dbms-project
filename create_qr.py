@@ -17,8 +17,8 @@ img = qr.make_image(
     back_color="white"
 )
 
-if not os.path.exists("static"):
-    os.makedirs("static")
+if not os.path.exists('static'):
+    os.makedirs('static')
 
 img.save("static/feedback-qr.png")
 

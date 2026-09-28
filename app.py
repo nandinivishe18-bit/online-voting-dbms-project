@@ -3,10 +3,9 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
-# Secret key
 app.secret_key = 'voting_key_123'
 
-# MySQL Configuration
+# Database Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'YOUR_MYSQL_PASSWORD'
@@ -15,48 +14,49 @@ app.config['MYSQL_DB'] = 'voting_system'
 mysql = MySQL(app)
 
 
-# Home Page
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return redirect(url_for('login'))
 
 
-# Voter Registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 
     if request.method == 'POST':
 
-        name = request.form['name']
-        prn = request.form['prn']
-        email = request.form['email']
-        mobile = request.form['mobile']
-        age = request.form['age']
-        password = request.form['password']
+        name = request.form.get('name')
+        prn = request.form.get('prn')
+        email = request.form.get('email')
+        mobile = request.form.get('mobile')
+        age = request.form.get('age')
+        password = request.form.get('password')
 
         cur = mysql.connection.cursor()
 
-        cur.execute("""
-            INSERT INTO voters
+        cur.execute(
+            "SELECT * FROM voters WHERE prn = %s",
+            (prn,)
+        )
+
+        if cur.fetchone():
+            cur.close()
+            return "<h3>PRN already registered! <a href='/register'>Try again</a></h3>"
+
+        cur.execute(
+            """INSERT INTO voters
             (name, prn, email, mobile, age, password)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (name, prn, email, mobile, age, password))
+            VALUES (%s, %s, %s, %s, %s, %s)""",
+            (name, prn, email, mobile, age, password)
+        )
 
         mysql.connection.commit()
         cur.close()
 
-        return redirect(url_for('confirm_register'))
+        return render_template('confirm_register.html')
 
     return render_template('register.html')
 
 
-# Registration Confirmation
-@app.route('/confirm-register')
-def confirm_register():
-    return render_template('confirm_register.html')
-
-
-# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -67,47 +67,43 @@ def login():
 
         cur = mysql.connection.cursor()
 
-        cur.execute("""
-            SELECT * FROM voters
-            WHERE prn = %s AND password = %s
-        """, (prn, password))
+        cur.execute(
+            "SELECT * FROM voters WHERE prn = %s AND password = %s",
+            (prn, password)
+        )
 
-        voter = cur.fetchone()
-
+        user = cur.fetchone()
         cur.close()
 
-        if voter:
+        if user:
             return redirect(url_for('vote'))
 
-        return "Invalid PRN or Password"
+        return "<h3>Invalid PRN or Password! <a href='/login'>Try again</a></h3>"
 
     return render_template('login.html')
 
 
-# Voting Page
 @app.route('/vote', methods=['GET', 'POST'])
 def vote():
 
     cur = mysql.connection.cursor()
 
-    # Get all candidates
-    cur.execute("SELECT * FROM candidates")
-    candidates = cur.fetchall()
-
     if request.method == 'POST':
 
-        candidate_id = request.form['candidate']
+        candidate_id = request.form.get('candidate_id')
 
-        cur.execute("""
-            UPDATE candidates
-            SET votes = votes + 1
-            WHERE id = %s
-        """, (candidate_id,))
+        cur.execute(
+            "UPDATE candidates SET votes = votes + 1 WHERE id = %s",
+            (candidate_id,)
+        )
 
         mysql.connection.commit()
         cur.close()
 
-        return redirect(url_for('confirm'))
+        return redirect(url_for('results'))
+
+    cur.execute("SELECT * FROM candidates")
+    candidates = cur.fetchall()
 
     cur.close()
 
@@ -117,73 +113,53 @@ def vote():
     )
 
 
-# Vote Confirmation
-@app.route('/confirm')
-def confirm():
-    return render_template('confirm.html')
-
-
-# Election Results
 @app.route('/results')
 def results():
 
     cur = mysql.connection.cursor()
 
-    cur.execute("""
-        SELECT name, party, votes
-        FROM candidates
-        ORDER BY votes DESC
-    """)
+    cur.execute(
+        "SELECT name, party, votes FROM candidates"
+    )
 
-    results = cur.fetchall()
+    data = cur.fetchall()
 
     cur.close()
 
     return render_template(
         'results.html',
-        results=results
+        candidates=data
     )
 
 
-# ER Diagram
 @app.route('/view-diagram')
 def view_diagram():
     return render_template('diagram.html')
 
 
-# Feedback
-@app.route('/feedback', methods=['GET', 'POST'])
+@app.route('/feedback', methods=['POST'])
 def feedback():
 
-    if request.method == 'POST':
+    email = request.form.get('email')
+    q1 = request.form.get('q1')
+    q2 = request.form.get('q2')
+    q3 = request.form.get('q3')
 
-        email = request.form['email']
-        q1_rating = request.form['q1_rating']
-        q2_ease_of_use = request.form['q2_ease_of_use']
-        q3_recommend = request.form['q3_recommend']
+    cur = mysql.connection.cursor()
 
-        cur = mysql.connection.cursor()
+    cur.execute(
+        """INSERT INTO feedback
+        (email, q1_rating, q2_ease_of_use, q3_recommend)
+        VALUES (%s, %s, %s, %s)""",
+        (email, q1, q2, q3)
+    )
 
-        cur.execute("""
-            INSERT INTO feedback
-            (email, q1_rating, q2_ease_of_use, q3_recommend)
-            VALUES (%s, %s, %s, %s)
-        """, (
-            email,
-            q1_rating,
-            q2_ease_of_use,
-            q3_recommend
-        ))
+    mysql.connection.commit()
+    cur.close()
 
-        mysql.connection.commit()
-        cur.close()
-
-        return "Thank you for your feedback!"
-
-    return render_template('index.html')
+    return render_template('confirm.html')
 
 
-# Run Application
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body
+    style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    ">
+
+    <div
+        style="
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 60px;
+            border-radius: 20px;
+        ">
+
+        <h1
+            style="
+                font-size: 50px;
+                color: white;
+            ">
+
+            Thank You For Your Feedback!
+
+        </h1>
+
+        <br>
+
+        <a
+            href="{{ url_for('results') }}"
+            style="
+                font-size: 25px;
+                color: #ffc107;
+                text-decoration: none;
+            ">
+
+            View Results
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>

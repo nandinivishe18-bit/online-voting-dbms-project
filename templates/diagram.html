@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>ER Diagram</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div
+        class="container"
+        style="
+            width: 90%;
+            max-width: 900px;
+        ">
+
+        <a href="{{ url_for('results') }}">
+
+            <button
+                type="button"
+                style="
+                    background: #6c757d;
+                    width: auto;
+                    padding: 10px 20px;
+                ">
+
+                ← Back to Results
+
+            </button>
+
+        </a>
+
+        <h2 style="margin-top: 20px;">
+            System ER Diagram
+        </h2>
+
+        <img
+            src="{{ url_for('static', filename='ER-diagram.jpg') }}"
+            style="
+                width: 100%;
+                border-radius: 10px;
+            ">
+
+    </div>
+
+</body>
+
+</html>

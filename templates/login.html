@@ -1,1 +1,33 @@
+{% extends "base.html" %}
 
+{% block content %}
+
+<h2>Login</h2>
+
+<form method="POST">
+
+    <input
+        type="text"
+        name="prn"
+        placeholder="PRN No."
+        required>
+
+    <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required>
+
+    <button type="submit">
+        Login
+    </button>
+
+</form>
+
+<p>
+    <a href="/register">
+        New User? Register
+    </a>
+</p>
+
+{% endblock %}

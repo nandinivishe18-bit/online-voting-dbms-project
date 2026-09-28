@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div
+        class="container"
+        style="text-align: center;">
+
+        <h1 style="color: #28a745;">
+            Registration Successful!
+        </h1>
+
+        <p>
+            Your details have been saved in the database.
+        </p>
+
+        <br>
+
+        <a
+            href="{{ url_for('login') }}"
+            style="
+                background: #ffc107;
+                color: black;
+                padding: 10px;
+                text-decoration: none;
+                border-radius: 5px;
+            ">
+
+            Login Now
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>

@@ -3,8 +3,7 @@ CREATE DATABASE voting_system;
 USE voting_system;
 
 
--- Voters Table
-
+-- Voters table
 CREATE TABLE voters (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
@@ -17,8 +16,7 @@ CREATE TABLE voters (
 );
 
 
--- Candidates Table
-
+-- Candidate table
 CREATE TABLE candidates (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
@@ -27,8 +25,7 @@ CREATE TABLE candidates (
 );
 
 
--- Feedback Table
-
+-- Feedback table
 CREATE TABLE feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100),
@@ -38,8 +35,7 @@ CREATE TABLE feedback (
 );
 
 
--- Custom Function
-
+-- Custom String Function
 DELIMITER //
 
 CREATE FUNCTION FormatCandidateName(
@@ -49,59 +45,44 @@ CREATE FUNCTION FormatCandidateName(
 RETURNS VARCHAR(255)
 DETERMINISTIC
 BEGIN
-
     RETURN CONCAT(
         UPPER(c_name),
         ' - Member of ',
         c_party
     );
-
 END //
 
 DELIMITER ;
 
 
 -- Database View
-
 CREATE VIEW election_results_summary AS
-
 SELECT
     name AS Candidate_Name,
     party AS Political_Party,
     votes AS Total_Votes
-
 FROM candidates
-
 ORDER BY votes DESC;
 
 
 -- Database Trigger
-
 DELIMITER //
 
 CREATE TRIGGER before_voter_insert
-
 BEFORE INSERT ON voters
-
 FOR EACH ROW
-
 BEGIN
-
-    SET NEW.name =
-        CONCAT(
-            UPPER(LEFT(NEW.name, 1)),
-            LOWER(SUBSTRING(NEW.name, 2))
-        );
-
+    SET NEW.name = CONCAT(
+        UPPER(LEFT(NEW.name, 1)),
+        LOWER(SUBSTRING(NEW.name, 2))
+    );
 END //
 
 DELIMITER ;
 
 
--- Initial Candidate Data
-
-INSERT INTO candidates
-(name, party, votes)
+-- Initial Data
+INSERT INTO candidates (name, party, votes)
 VALUES
 ('Shruti Rao', 'Technical Secretary', 0),
 ('Priya Patil', 'Innovation Party', 0),

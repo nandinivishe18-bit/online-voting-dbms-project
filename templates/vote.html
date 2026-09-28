@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Cast Your Vote</h2>
+
+<form method="POST">
+
+    {% for c in candidates %}
+
+    <div style="
+        border-bottom: 1px solid #444;
+        padding: 10px;
+    ">
+
+        <p>
+            <strong>{{ c[1] }}</strong>
+            ({{ c[2] }})
+        </p>
+
+        <button
+            type="submit"
+            name="candidate_id"
+            value="{{ c[0] }}"
+            style="width:100px;">
+
+            Vote
+
+        </button>
+
+    </div>
+
+    {% endfor %}
+
+</form>
+
+{% endblock %}
